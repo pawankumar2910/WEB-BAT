@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#020617" />
+    <title>PAVAN — Video Editor · Motion Designer · 3D Artist (no-build preview)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      ================================================================
+      NO-BUILD PREVIEW
+      ================================================================
+      This file exists only so the site can be viewed without Node.js
+      installed. It compiles src/App.jsx in the browser with Babel and
+      runs Tailwind's browser build over src/index.css, so it renders
+      THE EXACT SAME SOURCE FILES as the real Vite app — there is no
+      second copy of the UI to keep in sync.
+
+      It is slower to boot and needs an internet connection (CDNs).
+      Once Node is installed, use `npm run dev` instead; this file is
+      not part of the production build.
+      ================================================================
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@19.1.0",
+          "react/jsx-runtime": "https://esm.sh/react@19.1.0/jsx-runtime",
+          "react-dom": "https://esm.sh/react-dom@19.1.0",
+          "react-dom/client": "https://esm.sh/react-dom@19.1.0/client?deps=react@19.1.0",
+          "framer-motion": "https://esm.sh/framer-motion@12?deps=react@19.1.0,react-dom@19.1.0",
+          "lucide-react": "https://esm.sh/lucide-react@0.468.0?deps=react@19.1.0"
+        }
+      }
+    </script>
+
+    <style>
+      /* Boot-screen chrome only — no `color` here, so the compiled
+         index.css (injected at runtime) stays in charge of text colour. */
+      html,
+      body {
+        margin: 0;
+        background: #020617;
+        font-family: Inter, system-ui, sans-serif;
+      }
+      #boot {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        z-index: 999;
+        background: #020617;
+        transition: opacity 0.5s ease;
+      }
+      #boot .dot {
+        width: 42px;
+        height: 42px;
+        margin: 0 auto 18px;
+        border-radius: 99px;
+        background: linear-gradient(120deg, #8b5cf6, #06b6d4);
+        animation: pulse 1.1s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(0.85);
+          opacity: 0.6;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+      }
+      #boot p {
+        font-size: 11px;
+        letter-spacing: 0.28em;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      #boot pre {
+        max-width: 780px;
+        margin: 16px auto 0;
+        padding: 16px;
+        text-align: left;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #c4b5fd;
+        background: #0b1225;
+        border: 1px solid rgba(139, 92, 246, 0.35);
+        border-radius: 12px;
+        overflow: auto;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="boot">
+      <div>
+        <div class="dot"></div>
+        <p id="boot-msg">COMPILING</p>
+        <pre id="boot-err" hidden></pre>
+      </div>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="module">
+      const msg = document.getElementById("boot-msg");
+      const boot = document.getElementById("boot");
+      const errBox = document.getElementById("boot-err");
+
+      const fail = (label, error) => {
+        msg.textContent = label;
+        errBox.hidden = false;
+        errBox.textContent = String((error && error.stack) || error);
+        console.error(label, error);
+      };
+
+      // Assets live in /public; under this preview the page is served from
+      // the project root, so they sit one level deeper. App.jsx reads this.
+      window.__ASSET_BASE__ = "./public/";
+
+      try {
+        // ---- 1. Tailwind ------------------------------------------------
+        // Feed the real src/index.css to Tailwind's browser build so the
+        // preview uses the same tokens and component classes as the build.
+        msg.textContent = "LOADING STYLES";
+        const css = await fetch("./src/index.css").then((r) => {
+          if (!r.ok) throw new Error(`index.css -> HTTP ${r.status}`);
+          return r.text();
+        });
+
+        const styleEl = document.createElement("style");
+        styleEl.type = "text/tailwindcss";
+        styleEl.textContent = css;
+        document.head.appendChild(styleEl);
+
+        await new Promise((resolve, reject) => {
+          const s = document.createElement("script");
+          s.src = "https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4";
+          s.onload = resolve;
+          s.onerror = () => reject(new Error("Failed to load Tailwind browser build"));
+          document.head.appendChild(s);
+        });
+
+        // ---- 2. Compile App.jsx ----------------------------------------
+        msg.textContent = "COMPILING APP";
+        const source = await fetch("./src/App.jsx").then((r) => {
+          if (!r.ok) throw new Error(`App.jsx -> HTTP ${r.status}`);
+          return r.text();
+        });
+
+        const { code } = Babel.transform(source, {
+          filename: "App.jsx",
+          sourceType: "module",
+          presets: [["react", { runtime: "classic" }]],
+        });
+
+        // Bare specifiers inside the blob module resolve via the import map.
+        const blobUrl = URL.createObjectURL(
+          new Blob([code], { type: "text/javascript" })
+        );
+
+        // ---- 3. Mount ---------------------------------------------------
+        msg.textContent = "STARTING";
+        const [{ default: App }, React, { createRoot }] = await Promise.all([
+          import(blobUrl),
+          import("react"),
+          import("react-dom/client"),
+        ]);
+
+        createRoot(document.getElementById("root")).render(
+          React.createElement(React.StrictMode, null, React.createElement(App))
+        );
+
+        // Give Tailwind a beat to paint before revealing.
+        setTimeout(() => {
+          boot.style.opacity = "0";
+          setTimeout(() => boot.remove(), 520);
+        }, 350);
+      } catch (error) {
+        fail("PREVIEW FAILED", error);
+      }
+    </script>
+  </body>
+</html>
