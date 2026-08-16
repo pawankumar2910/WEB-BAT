@@ -1,0 +1,435 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   THE DARK KNIGHT
+   ---------------------------------------------------------------------
+   One theme only. There is no light mode and no prefers-color-scheme
+   branch — the whole site is a dark room, and every surface is defined
+   against #050505.
+   ===================================================================== */
+
+@theme {
+  --color-violet: #8b5cf6;
+  --color-violet-soft: #a78bfa;
+  --color-cyan: #22d3ee;
+  --color-bronze: #c89b6a;
+  --color-bronze-soft: #e0bb92;
+  --color-void: #050505;
+
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-shutter: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces, darkest to lightest. */
+  --canvas: #050505;
+  --canvas-2: #0a0a0d;
+  --canvas-3: #101014;
+  --canvas-4: #16161c;
+
+  /* Type. */
+  --ink: #f4f6fa;
+  --ink-soft: rgb(244 246 250 / 0.62);
+  --ink-faint: rgb(244 246 250 / 0.38);
+  --ink-ghost: rgb(244 246 250 / 0.16);
+
+  /* Glass. Kept as separate tokens so a panel can be re-tinted per
+     section without hunting through component files. */
+  --glass-bg: rgb(255 255 255 / 0.035);
+  --glass-bg-strong: rgb(255 255 255 / 0.06);
+  --glass-border: rgb(255 255 255 / 0.09);
+  --glass-border-lit: rgb(255 255 255 / 0.18);
+  --glass-blur: 26px;
+
+  --accent: #8b5cf6;
+  --accent-2: #22d3ee;
+
+  --shell: min(1280px, 100% - 2.5rem);
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* The floating navbar overlaps anchors; keep targets clear of it. */
+  scroll-padding-top: 6.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* A dark room still needs depth — two very low-alpha pools of colour keep
+   #050505 from reading as a flat void. Fixed so they never scroll away. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(60rem 45rem at 78% -8%, rgb(139 92 246 / 0.1), transparent 62%),
+    radial-gradient(48rem 40rem at 8% 32%, rgb(34 211 238 / 0.055), transparent 60%),
+    radial-gradient(52rem 44rem at 52% 108%, rgb(200 155 106 / 0.06), transparent 62%);
+}
+
+/* Film grain. Static SVG noise, cheap, and it hides banding in the big
+   dark gradients above. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.032;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#root {
+  position: relative;
+  z-index: 2;
+}
+
+::selection {
+  background: rgb(139 92 246 / 0.32);
+  color: #fff;
+}
+
+/* Scrollbar, dark to match. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.09);
+  border-radius: 99px;
+  border: 2px solid var(--canvas);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 0.16);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* =====================================================================
+   LAYOUT
+   ===================================================================== */
+.shell {
+  width: var(--shell);
+  margin-inline: auto;
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(5rem, 11vw, 9.5rem);
+}
+
+/* =====================================================================
+   GLASS
+   The single most repeated surface in the design. `backdrop-filter` is
+   the expensive part, so the blur radius is a token and the strong
+   variant is used sparingly.
+   ===================================================================== */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.05) inset,
+    0 24px 60px -30px rgb(0 0 0 / 0.9);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border-lit);
+  backdrop-filter: blur(38px) saturate(160%);
+  -webkit-backdrop-filter: blur(38px) saturate(160%);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.08) inset,
+    0 32px 80px -32px rgb(0 0 0 / 0.95);
+}
+
+/* Hairline that lights up on hover — used on cards and the navbar pill. */
+.glass-lit {
+  transition:
+    border-color 0.45s var(--ease-out-expo),
+    box-shadow 0.45s var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo);
+}
+.glass-lit:hover {
+  border-color: var(--glass-border-lit);
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.09) inset,
+    0 0 0 1px rgb(139 92 246 / 0.14),
+    0 40px 90px -40px rgb(139 92 246 / 0.4);
+}
+
+/* =====================================================================
+   TYPE
+   ===================================================================== */
+.display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Big outlined type used behind the hero portrait. */
+.stroke-type {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(244 246 250 / 0.14);
+}
+
+.text-gradient {
+  background: linear-gradient(96deg, #fff 0%, #cbb9ff 42%, #7dd8ea 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* =====================================================================
+   HERO CURSOR REVEAL
+   ---------------------------------------------------------------------
+   `.reveal-cowl` is the top layer. Its mask has a transparent core, so
+   the cowl is punched through and the face image underneath shows in the
+   hole. --mx/--my/--mr are written every frame by useRevealMask.
+
+   The stops matter: transparent out to 52% of the radius keeps the hole
+   genuinely clear, then a long ramp to opaque at 100% gives the soft
+   spotlight edge. At --mr: 0px the gradient collapses to its final stop,
+   which is opaque — a clean, fully-visible cowl with no seam.
+   ===================================================================== */
+.reveal-stage {
+  position: relative;
+  isolation: isolate;
+
+  /* Written every frame by useRevealMask. Declared here (not on the cowl)
+     so the halo inherits the same values rather than shadowing them. */
+  --mx: 50%;
+  --my: 50%;
+  --mr: 0px;
+}
+
+.reveal-layer {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.reveal-face {
+  position: absolute;
+  inset: 0;
+  z-index: 1; 
+  
+  /* Shrunk the mask: starts fading at 40% of the radius, disappears at 60% */
+  -webkit-mask-image: radial-gradient(
+    circle at var(--mx) var(--my),
+    #000 0px,
+    #000 calc(var(--mr) * 0.4),
+    transparent calc(var(--mr) * 0.6)
+  );
+  mask-image: radial-gradient(
+    circle at var(--mx) var(--my),
+    #000 0px,
+    #000 calc(var(--mr) * 0.4),
+    transparent calc(var(--mr) * 0.6)
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.reveal-cowl {
+  position: relative;
+  z-index: 10; 
+  
+  /* Matched the exact same shrunk size for the eraser hole */
+  -webkit-mask-image: radial-gradient(
+    circle at var(--mx) var(--my),
+    transparent 0px,
+    transparent calc(var(--mr) * 0.4),
+    #000 calc(var(--mr) * 0.6)
+  );
+  mask-image: radial-gradient(
+    circle at var(--mx) var(--my),
+    transparent 0px,
+    transparent calc(var(--mr) * 0.4),
+    #000 calc(var(--mr) * 0.6)
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+/* A faint ring chasing the hole sells it as a light source rather than a
+   cut-out. Purely decorative, so it never eats pointer events. */
+.reveal-halo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out-expo);
+  background: radial-gradient(
+    circle var(--halo-r, 120px) at var(--mx, 50%) var(--my, 50%), /* Reduced from 240px to 120px */
+    rgb(139 92 246 / 0.08) 0%,  /* Reduced opacity from 0.16 to 0.08 */
+    rgb(139 92 246 / 0.03) 46%, /* Reduced opacity from 0.07 to 0.03 */
+    transparent 72%
+  );
+  mix-blend-mode: screen;
+}
+.reveal-stage[data-revealing="true"] .reveal-halo {
+  opacity: 1;
+}
+
+/* =====================================================================
+   MOVIE CREDITS
+   ===================================================================== */
+.credit-line {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+}
+
+.credit-glow {
+  text-shadow:
+    0 0 18px rgb(139 92 246 / 0.45),
+    0 0 46px rgb(139 92 246 / 0.18);
+}
+
+/* =====================================================================
+   WORK REEL
+   The diagonal lanes translate on the X axis forever; the wrapper is
+   rotated so the motion reads as a diagonal drift.
+   ===================================================================== */
+.reel-plane {
+  transform: rotate(-8deg) scale(1.16);
+  transform-origin: center;
+}
+
+.reel-lane {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;
+  will-change: transform;
+}
+
+.reel-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+
+/* =====================================================================
+   SHUTTER
+   Projects roll up from the bottom like a window blind. GSAP drives
+   `--shutter` from 1 to 0 on scroll.
+   ===================================================================== */
+.shutter {
+  clip-path: inset(calc(var(--shutter, 1) * 100%) 0 0 0);
+}
+
+.shutter-slats {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(var(--shutter, 0) * 0.5);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.55) 0px,
+    rgb(0 0 0 / 0.55) 2px,
+    transparent 2px,
+    transparent 9px
+  );
+}
+
+/* =====================================================================
+   MISC
+   ===================================================================== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Cinema player scrubber. */
+.scrubber {
+  appearance: none;
+  height: 3px;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 0.16);
+  cursor: pointer;
+}
+.scrubber::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px rgb(139 92 246 / 0.9);
+}
+.scrubber::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 14px rgb(139 92 246 / 0.9);
+}
+
+/* Native select options can't be styled dark on Windows; force it. */
+select option {
+  background: #101014;
+  color: #f4f6fa;
+}
