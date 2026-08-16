@@ -171,13 +171,21 @@ export function Contact({ prefill }) {
 
     /* Hand the enquiry to the visitor's mail client with everything filled
        in — there is no backend, and a mailto keeps it that way. */
-    const subject = encodeURIComponent(`New enquiry — ${form.need}`);
+   const subject = encodeURIComponent(`New enquiry — ${form.need}`);
     const body = encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\nNeeds: ${form.need}\n\n${form.message}`
     );
     
-    // Opens Gmail in a new tab using window.open and Gmail's 'su' parameter for the subject
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}&su=${subject}&body=${body}`, "_blank");
+    // Check if the user is on a mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // Opens the native Mail/Gmail app on phones
+      window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
+    } else {
+      // Opens the Gmail web tab on desktop
+      window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}&su=${subject}&body=${body}`, "_blank");
+    }
   };
 
   return (
@@ -328,11 +336,19 @@ function Footer() {
           <div className="mt-10 flex flex-col items-center gap-6 border-t border-white/[0.06] pt-8 sm:flex-row sm:justify-between">
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
-                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}`}
-                target="_blank"
-                rel="noreferrer noopener"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  play("click");
+                  
+                  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                  if (isMobile) {
+                    window.location.href = `mailto:${SITE.email}`;
+                  } else {
+                    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}`, "_blank");
+                  }
+                }}
                 onPointerEnter={() => play("hover")}
-                onClick={() => play("click")}
                 className="glass glass-lit inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 text-[0.84rem] text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
               >
                 <Mail className="h-4 w-4" />
