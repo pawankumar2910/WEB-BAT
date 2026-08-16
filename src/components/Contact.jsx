@@ -175,7 +175,9 @@ export function Contact({ prefill }) {
     const body = encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\nNeeds: ${form.need}\n\n${form.message}`
     );
-    window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`;
+    
+    // Opens Gmail in a new tab using window.open and Gmail's 'su' parameter for the subject
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}&su=${subject}&body=${body}`, "_blank");
   };
 
   return (
@@ -326,7 +328,9 @@ function Footer() {
           <div className="mt-10 flex flex-col items-center gap-6 border-t border-white/[0.06] pt-8 sm:flex-row sm:justify-between">
             <div className="flex flex-wrap items-center justify-center gap-3">
               <a
-                href={`mailto:${SITE.email}`}
+                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${SITE.email}`}
+                target="_blank"
+                rel="noreferrer noopener"
                 onPointerEnter={() => play("hover")}
                 onClick={() => play("click")}
                 className="glass glass-lit inline-flex items-center gap-2.5 rounded-full px-5 py-2.5 text-[0.84rem] text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
