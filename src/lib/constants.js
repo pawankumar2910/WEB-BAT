@@ -11,9 +11,12 @@ import {
 
 /* =====================================================================
    ASSETS
-   Everything lives in /public/assets. hero-cowl and hero-face are a
-   pixel-aligned 1800x1350 pair — the cursor mask in Hero depends on that
-   alignment, so never resize one without the other.
+   Everything lives in /public/assets. hero-cowl is generated FROM
+   hero-face by scripts/build-hero-cowl.mjs (offline edge-detection, no
+   API) — a glowing violet/cyan wireframe read of the same portrait that
+   the cursor mask in Hero resolves back into the real photo. Regenerate
+   hero-cowl any time hero-face changes; never hand-edit one without the
+   other, since alignment depends on the cowl being derived from it.
    ===================================================================== */
 const ASSET_BASE =
   (typeof window !== "undefined" && window.__ASSET_BASE__) || "/";

@@ -199,14 +199,15 @@ export function SoftwareBadge({ id, compact = false }) {
     <span
       title={tool.name}
       className={cx(
-        "inline-grid place-items-center rounded-[7px] border font-display font-bold",
-        compact ? "h-6 w-6 text-[0.6rem]" : "h-8 w-8 text-[0.72rem]"
+        "inline-grid place-items-center rounded-lg border font-display font-bold shadow-lg transition-transform hover:scale-110 hover:-translate-y-1",
+        compact ? "h-7 w-7 text-[0.65rem]" : "h-10 w-10 text-[0.85rem]"
       )}
       style={{
         color: tool.color,
-        borderColor: `${tool.color}44`,
-        background: `${tool.color}12`,
-        boxShadow: `0 0 18px -8px ${tool.color}`,
+        borderColor: `${tool.color}66`,
+        background: `linear-gradient(135deg, ${tool.color}33, ${tool.color}05)`,
+        boxShadow: `0 4px 10px -2px ${tool.color}66, inset 0 1px 0 0 rgba(255,255,255,0.2)`,
+        transformStyle: "preserve-3d"
       }}
     >
       {tool.short}

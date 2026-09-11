@@ -169,26 +169,28 @@ body::after {
    variant is used sparingly.
    ===================================================================== */
 .glass {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
   box-shadow:
-    0 1px 0 0 rgb(255 255 255 / 0.05) inset,
-    0 24px 60px -30px rgb(0 0 0 / 0.9);
+    0 1px 0 0 rgb(255 255 255 / 0.1) inset,
+    0 10px 40px -10px rgb(0 0 0 / 0.8),
+    0 0 20px -5px rgba(139, 92, 246, 0.15);
 }
 
 .glass-strong {
-  background: var(--glass-bg-strong);
-  border: 1px solid var(--glass-border-lit);
-  backdrop-filter: blur(38px) saturate(160%);
-  -webkit-backdrop-filter: blur(38px) saturate(160%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
   box-shadow:
-    0 1px 0 0 rgb(255 255 255 / 0.08) inset,
-    0 32px 80px -32px rgb(0 0 0 / 0.95);
+    0 1px 0 0 rgb(255 255 255 / 0.15) inset,
+    0 20px 60px -20px rgb(0 0 0 / 0.9),
+    0 0 30px -5px rgba(34, 211, 238, 0.2);
 }
 
-/* Hairline that lights up on hover — used on cards and the navbar pill. */
+/* Hairline that lights up on hover ?" used on cards and the navbar pill. */
 .glass-lit {
   transition:
     border-color 0.45s var(--ease-out-expo),
@@ -196,11 +198,13 @@ body::after {
     transform 0.45s var(--ease-out-expo);
 }
 .glass-lit:hover {
-  border-color: var(--glass-border-lit);
+  border-color: rgba(139, 92, 246, 0.6);
   box-shadow:
-    0 1px 0 0 rgb(255 255 255 / 0.09) inset,
-    0 0 0 1px rgb(139 92 246 / 0.14),
-    0 40px 90px -40px rgb(139 92 246 / 0.4);
+    0 1px 0 0 rgb(255 255 255 / 0.2) inset,
+    0 0 0 1px rgb(139 92 246 / 0.3),
+    0 40px 90px -40px rgb(139 92 246 / 0.5),
+    0 0 30px 0px rgba(139, 92, 246, 0.3);
+  transform: translateY(-4px) scale(1.02) perspective(1000px) rotateX(2deg) rotateY(2deg);
 }
 
 /* =====================================================================

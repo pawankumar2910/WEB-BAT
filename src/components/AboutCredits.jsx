@@ -80,11 +80,13 @@ export function AboutCredits() {
       /* The pull-through. Only the last 22% of the track drives it. */
       gsap.fromTo(
         stage,
-        { scale: 1, opacity: 1, filter: "blur(0px)" },
+        { scale: 1, opacity: 1, filter: "blur(0px)", rotationX: 0, rotationY: 0 },
         {
           scale: 3.4,
           opacity: 0,
           filter: "blur(14px)",
+          rotationX: 15,
+          rotationY: -10,
           ease: "power2.in",
           scrollTrigger: {
             trigger: track,

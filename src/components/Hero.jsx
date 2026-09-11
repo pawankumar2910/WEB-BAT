@@ -7,6 +7,7 @@ import { EASE, scrollToId } from "../lib/utils.js";
 import { useRevealMask } from "../hooks/useRevealMask.js";
 import { useSfx } from "../hooks/useSfx.js";
 import { GlowButton } from "./ui/Primitives.jsx";
+import { FloatingElements } from "./Floating3D.jsx";
 
 /* =====================================================================
    HERO — the cinematic reveal
@@ -50,6 +51,7 @@ export function Hero({ onEnquire }) {
       className="relative flex min-h-svh flex-col justify-center overflow-hidden pt-28 pb-10"
     >
       <div className="shell relative">
+        <FloatingElements />
         {/* ---- Type behind the portrait -------------------------------- */}
         <motion.div
           style={{ y: typeY, opacity: fade }}
@@ -96,7 +98,7 @@ export function Hero({ onEnquire }) {
             <img
               ref={maskRef}
               src={ASSETS.heroCowl}
-              alt="Pavan in a Batman cowl"
+              alt="Pavan rendered as a glowing wireframe"
               className="reveal-layer reveal-cowl"
               draggable={false}
               fetchPriority="high"
