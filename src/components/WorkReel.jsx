@@ -33,8 +33,8 @@ function ReelTile({ item, onOpen }) {
         setHovered(true);
       }}
       onPointerLeave={() => setHovered(false)}
-      className="group relative block h-[clamp(11rem,19vw,16rem)] shrink-0 overflow-hidden rounded-2xl border border-[var(--glass-border)] text-left transition-[border-color,transform] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-[var(--glass-border-lit)]"
-      style={{ aspectRatio: item.aspect, boxShadow: `0 30px 70px -40px ${item.from}` }}
+      className="group relative block h-[clamp(11rem,19vw,16rem)] shrink-0 overflow-hidden rounded-2xl border border-[var(--glass-border)] text-left transition-[border-color,transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-2 hover:scale-[1.02] hover:rotate-1 hover:border-purple-500/50"
+      style={{ aspectRatio: item.aspect, boxShadow: `0 20px 50px -20px ${item.from}`, transformStyle: "preserve-3d" }}
       aria-label={`Play ${item.title}`}
     >
       <span className="relative block h-full w-full overflow-hidden bg-[var(--canvas-3)]">
